@@ -83,7 +83,7 @@
         computed: {
             browsed: mapGetters(['getBrowsed']).getBrowsed,
             isBusy: mapGetters(['isBusy']).isBusy,
-            keyPress: mapGetters(['getKeyPress']).getKeyPress,
+            pressedKey: mapGetters(['getPressedKey']).getPressedKey,
             error: mapGetters(['getError']).getError
         },
         data() {
@@ -188,7 +188,7 @@
             }
         },
         watch: {
-            keyPress({key}) {
+            pressedKey({key}) {
                 if (KeyBindings.goto.includes(key)) {
                     this.mdlgPrompt()
                 } else if (KeyBindings.explore.includes(key)) {

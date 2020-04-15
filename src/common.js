@@ -1,3 +1,7 @@
+const DEF_PIN = 'vezloxpindefault123vezloxpin';
+const WS_URL = 'ws://localhost:31444';
+const LOCK_EXT = '.ezx';
+
 const KeyBindings = {
     forward: ['d', 'arrowright', 'enter'],
     back: ['a', 'backspace', 'arrowleft'],
@@ -38,9 +42,26 @@ const Commands = {
 };
 
 const hasEncExt = p => {
-    return p ? p.toLowerCase().endsWith('.ezx') : false;
+    return p ? p.toLowerCase().endsWith(LOCK_EXT) : false;
 };
 
-const getPin = ()=> `vezloxpindefault123vezloxpin`;
+const getPin = () => DEF_PIN;
 
-export {KeyBindings, Commands, hasEncExt, getPin};
+const WS = (() => {
+    let conn;
+    const o = {
+        getConnection: () => {
+            if (!conn)
+                conn = new WebSocket(WS_URL);
+            return conn;
+        },
+        send: msg => {
+            if (typeof msg !== 'string')
+                msg = JSON.stringify(msg);
+            o.getConnection().send(msg);
+        }
+    };
+    return o;
+})();
+
+export {KeyBindings, Commands, hasEncExt, getPin, WS};

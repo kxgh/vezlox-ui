@@ -178,7 +178,7 @@
         computed: {
             items: mapGetters(['getItems']).getItems,
             browsed: mapGetters(['getBrowsed']).getBrowsed,
-            keyPress: mapGetters(['getKeyPress']).getKeyPress,
+            pressedKey: mapGetters(['getPressedKey']).getPressedKey,
             chosenItem: mapGetters(['getChosenItem']).getChosenItem,
             isBusy: mapGetters(['isBusy']).isBusy
         },
@@ -194,7 +194,7 @@
                 };
                 setImmediate(f);
             },
-            keyPress(nv) {
+            pressedKey(nv) {
                 const k = nv.key;
                 this.lastCmd = '';
 

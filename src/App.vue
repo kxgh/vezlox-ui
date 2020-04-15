@@ -15,9 +15,7 @@
     export default {
         name: 'App',
         methods: {
-            printState: mapActions(['printState']).printState,
-            ...mapActions(['appInit']),
-            pressKey: mapActions(['keyPress']).keyPress
+            ...mapActions(['appInit','keyPress'])
         },
         watch:{
 
@@ -25,7 +23,7 @@
         created() {
             this.appInit();
             window.addEventListener('keydown', (ev) => {
-                    this.pressKey({
+                    this.keyPress({
                         key: ev.key.toLowerCase(),
                         event: ev
                     });
@@ -40,8 +38,7 @@
         computed: {
             browsed: mapGetters(['getBrowsed']).getBrowsed,
             chosenItem: mapGetters(['getChosenItem']).getChosenItem,
-            isBusy: mapGetters(['isBusy']).isBusy,
-            keyPress: mapGetters(['getKeyPress']).getKeyPress
+            isBusy: mapGetters(['isBusy']).isBusy
         }
     }
 </script>

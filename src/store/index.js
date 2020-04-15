@@ -1,24 +1,20 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {KeyBindings,Commands, hasEncExt, getPin} from "@/common";
+import {KeyBindings, Commands, hasEncExt, getPin, WS} from "@/common";
 
-const sockURL = 'ws://localhost:31444';
-let conn = null;
 const genSyncId = (function () {
     let sid = 1;
-    return () => {
-        return sid++;
-    }
+    return () => sid++
 })();
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
     getters: {
         getItems: state => state.items,
         getBrowsed: state => state.browsed,
         getChosenItem: state => state.chosenItem,
-        getKeyPress: state => state.keyPress,
+        getPressedKey: state => state.pressedKey,
         isBusy: state => state.syncList.length > 0,
         getError: state => state.error
     },
@@ -33,7 +29,7 @@ export default new Vuex.Store({
             full: null,
             name: null
         },
-        keyPress: {
+        pressedKey: {
             time: null,
             key: null,
         },
@@ -75,41 +71,37 @@ export default new Vuex.Store({
                     if (cmd.ext === '/') {
                         cmd.type = Commands.browse;
                     } else {
-                        commit('markChosen', {full:cmd.full, name:cmd.name});
+                        commit('markChosen', {full: cmd.full, name: cmd.name});
                     }
                 }
-                if(cmd.type === Commands.explore){
+                if (cmd.type === Commands.explore) {
                     this.dispatch('_askFor', {type: cmd.type, target: getters.getBrowsed});
                 }
                 if (cmd.type === Commands.browse) {
                     commit('setLastFocusId', cmd.focusId ? cmd.focusId : 0);
                     this.dispatch('_askFor', {type: cmd.type, target: cmd.full || cmd.target});
                 }
-                if([Commands.run,Commands.shred,Commands.crypt,Commands.setdef].includes(cmd.type))
+                if ([Commands.run, Commands.shred, Commands.crypt, Commands.setdef].includes(cmd.type))
                     this.dispatch('_askFor', {type: cmd.type, target: cmd.target});
             }
         },
         async _askFor({commit, state}, {type, target}) {
-            if (conn) {
-                const o = {
-                    type, target,
-                    pin: getPin()
-                };
-                switch(type){
-                    case Commands.crypt:
-                        o.type = hasEncExt(target) ? 'decrypt' : 'encrypt';
-                        o.phrase = state.phrase;
-                    // eslint-disable-next-line no-fallthrough
-                    case Commands.browse:
-                    case Commands.shred:
-                        o.sid = genSyncId();
-                        commit('addSyncJob', o.sid);
-                        break;
-                }
-                conn.send(JSON.stringify(o));
-            } else {
-                console.log(`No connection`)
+            const o = {
+                type, target,
+                pin: getPin()
+            };
+            switch (type) {
+                case Commands.crypt:
+                    o.type = hasEncExt(target) ? 'decrypt' : 'encrypt';
+                    o.phrase = state.phrase;
+                // eslint-disable-next-line no-fallthrough
+                case Commands.browse:
+                case Commands.shred:
+                    o.sid = genSyncId();
+                    commit('addSyncJob', o.sid);
+                    break;
             }
+            WS.send(o);
         },
         async _onMsg({commit}, msg) {
             if (msg.type === Commands.browse) {
@@ -123,11 +115,9 @@ export default new Vuex.Store({
                 commit('removeSyncJob', msg.sid);
         },
         async appInit() {
-            if (conn)
-                return;
-            conn = new WebSocket(sockURL);
+            const conn = WS.getConnection();
             conn.onopen = () => {
-                console.log(`Opened ws at ${sockURL}`)
+                console.log(`Opened ws`)
             };
             conn.onmessage = msg => {
                 this.dispatch('_onMsg', JSON.parse(msg.data))
@@ -145,7 +135,7 @@ export default new Vuex.Store({
             };
             state.browsed = browsed;
         },
-        markChosen(state, {full,name}) {
+        markChosen(state, {full, name}) {
             state.chosenItem = {
                 full,
                 name
@@ -162,7 +152,7 @@ export default new Vuex.Store({
                 state.syncList = state.syncList.filter(j => j != sid);
         },
         setKey(state, key) {
-            state.keyPress = {
+            state.pressedKey = {
                 time: Date.now(),
                 key
             };
@@ -179,7 +169,7 @@ export default new Vuex.Store({
                 time: Date.now()
             }
         },
-        setPhrase(state, phr){
+        setPhrase(state, phr) {
             state.phrase = phr;
         }
     },
