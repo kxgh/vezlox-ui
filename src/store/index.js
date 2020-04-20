@@ -38,7 +38,7 @@ export default new Vuex.Store({
             time: null,
             msg: null
         },
-        phrase: '!!!!048_DEFault+PhrASe!'
+        phrase: '00_sOmEdEfAulTphraseeeeee!!'
     },
     actions: {
         async keyPress({commit, state, getters}, {key, event}) {
@@ -82,17 +82,18 @@ export default new Vuex.Store({
                     this.dispatch('_askFor', {type: cmd.type, target: cmd.full || cmd.target});
                 }
                 if ([Commands.run, Commands.shred, Commands.crypt, Commands.setdef].includes(cmd.type))
-                    this.dispatch('_askFor', {type: cmd.type, target: cmd.target});
+                    this.dispatch('_askFor', cmd);
             }
         },
-        async _askFor({commit, state}, {type, target}) {
+        async _askFor({commit, state}, cmd) {
             const o = {
-                type, target,
+                type: cmd.type,
                 pin: getPin()
             };
-            switch (type) {
+            Object.assign(o, cmd);
+            switch (o.type) {
                 case Commands.crypt:
-                    o.type = hasEncExt(target) ? 'decrypt' : 'encrypt';
+                    o.type = hasEncExt(o.target) ? 'decrypt' : 'encrypt';
                     o.phrase = state.phrase;
                 // eslint-disable-next-line no-fallthrough
                 case Commands.browse:

@@ -25,6 +25,15 @@
                 <p>Are you sure you want to shred file</p>
                 <kbd>{{chosenItem.full}}</kbd>
             </div>
+            <b-form-group
+                    label="Shred strategy:"
+                    description="A strategy to be used for shredding.">
+                <b-form-select v-model="shredStrategy" :options="shredStrategyOptions" size="sm" class="mt-2"/>
+            </b-form-group>
+            <b-form-group label="Choose shred pass count:"
+                          description="How many times should the file be shredded">
+                <b-form-spinbutton v-model="shredPassCount"/>
+            </b-form-group>
             <b-button id="btnMdlsConfirm" class="mt-3" variant="outline-success" block @click="mdlsConfirm()">Shred
             </b-button>
             <b-button class="mt-2" variant="outline-danger" block @click="mdlsHide()">Cancel</b-button>
@@ -57,7 +66,18 @@
                 focusedItemId: -1,
                 focusedItemEl: null,
                 lastCmd: '',
-                lastFocusMap: {}
+                lastFocusMap: {},
+                shredStrategyOptions: [
+                    {
+                        label: 'Multi-pass strategies:',
+                        options: ['US DOD']
+                    }, {
+                        label: 'Simple fill strategies:',
+                        options: ['Zero bytes', 'FF bytes', 'Random bytes']
+                    }
+                ],
+                shredStrategy: 'US DOD',
+                shredPassCount: 1
             }
         },
         methods: {
@@ -83,7 +103,12 @@
             },
             mdlsConfirm() {
                 this.lastCmd = Commands.shred;
-                this.newCommand({type: Commands.shred, target: this.chosenItem.full});
+                this.newCommand({
+                    type: Commands.shred,
+                    target: this.chosenItem.full,
+                    strategy: this.shredStrategy,
+                    passCount: this.shredPassCount
+                });
                 this.mdls().hide();
             },
 
