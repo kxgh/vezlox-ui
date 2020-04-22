@@ -10,7 +10,6 @@ import {
     NEW_COMMAND, APP_INIT
 } from './actions.type'
 import * as MUTS from './mutations.type';
-import {SET_ITEMS} from "./mutations.type";
 
 Vue.use(Vuex);
 
@@ -122,7 +121,7 @@ export default new Vuex.Store({
         },
         async _onMsg({commit}, msg) {
             if (msg.type === Commands.browse) {
-                this.dispatch(ADD_CUSTOM_SYNC_JOB, SET_ITEMS);
+                this.dispatch(ADD_CUSTOM_SYNC_JOB, MUTS.SET_ITEMS);
                 //state.syncList.push(SET_ITEMS);
                 setImmediate(() => {
                     commit(MUTS.SET_ITEMS, msg.browse);
@@ -150,7 +149,7 @@ export default new Vuex.Store({
         [MUTS.SET_ITEMS](state, items) {
             setImmediate(() => {
                 state.items = items;
-                state.syncList = state.syncList.filter(j => j != SET_ITEMS)
+                state.syncList = state.syncList.filter(j => j != MUTS.SET_ITEMS)
             });
         },
         [MUTS.SET_BROWSED](state, browsed) {

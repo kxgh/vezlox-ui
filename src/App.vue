@@ -69,9 +69,4 @@
         box-shadow: 0 2px 4px black;
         margin-right: 1vw;
     }
-
-    #browsedDir {
-        font-weight: bold;
-        font-family: "Segoe UI", sans-serif;
-    }
 </style>

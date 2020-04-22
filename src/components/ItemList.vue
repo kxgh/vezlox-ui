@@ -267,6 +267,8 @@
 </script>
 <style scoped>
     .fileitem-name {
+        font-family: Cairo, Helvetica, Arial, sans-serif;
+        font-size: large;
         max-width: 80%;
         word-break: normal;
         overflow: hidden;

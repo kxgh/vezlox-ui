@@ -1,25 +1,27 @@
 <template>
-    <b-breadcrumb class="d-flex justify-content-between align-items-center">
-        <b-breadcrumb-item v-bind:active="false">
-            <span id="browsedDir" @click="mdlgPrompt">{{browsed}}</span>
-        </b-breadcrumb-item>
-        <div class="pill-container">
-            <b-button id="btnSetDef" size="sm" pill variant="light" @click="btnSetDefClick">
-                <b-icon icon="house-fill" variant="dark"></b-icon>
-            </b-button>
-            <b-button id="btnExplore" size="sm" pill variant="light" @click="btnExploreClick">
-                <b-icon icon="folder-symlink" variant="dark"></b-icon>
-            </b-button>
-            <b-button id="btnGoto" size="sm" pill variant="light" @click="btnGotoClick()">
-                <b-icon icon="reply-fill" variant="dark"></b-icon>
-            </b-button>
-            <b-button id="btnRefresh" size="sm" pill variant="light" @click="btnRefreshClick">
-                <b-icon icon="arrow-repeat" variant="dark"></b-icon>
-            </b-button>
-            <b-button id="btnPhrase" size="sm" pill variant="light" @click="btnPhraseClick">
-                <b-icon icon="shield-lock-fill" variant="dark"></b-icon>
-            </b-button>
-        </div>
+    <b-breadcrumb class="">
+        <header>
+            <div id="browsedDir">
+                <a href="#" @click="mdlgPrompt">{{browsed}}</a>
+            </div>
+            <div class="pill-container">
+                <b-button id="btnSetDef" size="sm" pill variant="light" @click="btnSetDefClick">
+                    <b-icon icon="house-fill" variant="dark"></b-icon>
+                </b-button>
+                <b-button id="btnExplore" size="sm" pill variant="light" @click="btnExploreClick">
+                    <b-icon icon="folder-symlink" variant="dark"></b-icon>
+                </b-button>
+                <b-button id="btnGoto" size="sm" pill variant="light" @click="btnGotoClick()">
+                    <b-icon icon="reply-fill" variant="dark"></b-icon>
+                </b-button>
+                <b-button id="btnRefresh" size="sm" pill variant="light" @click="btnRefreshClick">
+                    <b-icon icon="arrow-repeat" variant="dark"></b-icon>
+                </b-button>
+                <b-button id="btnPhrase" size="sm" pill variant="light" @click="btnPhraseClick">
+                    <b-icon icon="shield-lock-fill" variant="dark"></b-icon>
+                </b-button>
+            </div>
+        </header>
 
         <b-modal ref="modal-setdef" hide-footer centered title="Set new default start directory" size="xl"
                  @shown="mdldOnShown"
@@ -212,5 +214,22 @@
     }
 </script>
 
-<style>
+<style scoped>
+    header{
+        display: block;
+        width: 100%;
+        min-width: 300px;
+    }
+    header .pill-container{
+        float:right;
+    }
+    #browsedDir {
+        display: inline;
+        max-width: 75%;
+        min-width: 50%;
+        font-weight: bold;
+        font-size: large;
+        font-family: Cairo, "Segoe UI", sans-serif;
+        word-break: break-all;
+    }
 </style>
