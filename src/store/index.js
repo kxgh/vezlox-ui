@@ -90,7 +90,7 @@ export default new Vuex.Store({
                     }
                 }
                 if (cmd.type === Commands.explore) {
-                    this.dispatch('_askFor', {type: cmd.type, target: getters.getBrowsed});
+                    this.dispatch('_askFor', {type: cmd.type, target: getters.browsed});
                 }
                 if (cmd.type === Commands.browse) {
                     commit(MUTS.SET_LAST_FOCUS_ID, cmd.focusId ? cmd.focusId : 0);

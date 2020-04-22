@@ -327,6 +327,10 @@
         background-image: url("/icons/lock.png");
     }
 
+    .fileitem[data-ext$='mp3']::before, .fileitem[data-ext$='wav']::before, .fileitem[data-ext$='m4a']::before, .fileitem[data-ext$='flac']::before {
+        background-image: url("/icons/sound.png");
+    }
+
     .fileitem[data-ext$='txt']::before, .fileitem[data-ext$='cfg']::before, .fileitem[data-ext$='srt']::before, .fileitem[data-ext$='rtf']::before, .fileitem[data-ext$='css']::before {
         background-image: url("/icons/text.png");
     }
