@@ -11,19 +11,19 @@
     import ItemList from './components/ItemList.vue'
     import {mapActions, mapGetters} from 'vuex'
     import TopBar from "@/components/TopBar";
+    import {
+        APP_INIT, KEY_PRESS
+    } from '@/store/actions.type'
 
     export default {
         name: 'App',
         methods: {
-            ...mapActions(['appInit','keyPress'])
-        },
-        watch:{
-
+            ...mapActions([APP_INIT, KEY_PRESS])
         },
         created() {
-            this.appInit();
+            this[APP_INIT]();
             window.addEventListener('keydown', (ev) => {
-                    this.keyPress({
+                    this[KEY_PRESS]({
                         key: ev.key.toLowerCase(),
                         event: ev
                     });
@@ -36,10 +36,13 @@
             ItemList
         },
         computed: {
-            browsed: mapGetters(['getBrowsed']).getBrowsed,
-            chosenItem: mapGetters(['getChosenItem']).getChosenItem,
-            isBusy: mapGetters(['isBusy']).isBusy
+            ...mapGetters(['isBusy', 'browsed', 'chosenItem'])
         }
+        /*watch:{
+            isBusy(nv,ov){
+                console.log(`isBusy changed! from ${ov} to ${nv}. Is now ${nv? 'busy' : 'free'}`);
+            }
+        }*/
     }
 </script>
 

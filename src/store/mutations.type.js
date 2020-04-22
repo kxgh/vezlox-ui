@@ -1,0 +1,10 @@
+export const SET_ITEMS = 'setItems';
+export const SET_BROWSED = 'setBrowsed';
+export const MARK_CHOSEN = 'markChosen';
+export const SET_LAST_FOCUS_ID = 'setLastFocusId';
+export const ADD_SYNC_JOB = 'addSyncJob';
+export const REMOVE_SYNC_JOB = 'removeSyncJob';
+export const SET_KEY = 'setKey';
+export const SET_KEY_FREEZE = 'keyUnfreeze';
+export const SET_ERROR = 'setError';
+export const SET_PHRASE = 'setPhrase';

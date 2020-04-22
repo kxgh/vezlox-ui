@@ -58,6 +58,13 @@
 <script>
     import {mapActions, mapGetters} from 'vuex';
     import {KeyBindings, Commands, hasEncExt} from "@/common";
+    import {
+        ADD_CUSTOM_SYNC_JOB,
+        REMOVE_CUSTOM_SYNC_JOB,
+        KEY_FREEZE,
+        KEY_UNFREEZE,
+        NEW_COMMAND
+    } from '@/store/actions.type';
 
     export default {
         name: 'ItemList',
@@ -81,7 +88,7 @@
             }
         },
         methods: {
-            ...mapActions(['keyFreeze', 'keyUnfreeze', 'newCommand']),
+            ...mapActions([KEY_UNFREEZE, KEY_FREEZE, NEW_COMMAND, ADD_CUSTOM_SYNC_JOB, REMOVE_CUSTOM_SYNC_JOB]),
             chosenItemEncrypted() {
                 return hasEncExt(this.chosenItem.name)
             },
@@ -95,15 +102,15 @@
                 this.mdls().hide();
             },
             mdlsOnHide() {
-                this.keyUnfreeze();
+                this[KEY_UNFREEZE]();
             },
             mdlsOnShown() {
-                this.keyFreeze();
+                this[KEY_FREEZE]();
                 document.getElementById('btnMdlsConfirm').focus()
             },
             mdlsConfirm() {
                 this.lastCmd = Commands.shred;
-                this.newCommand({
+                this[NEW_COMMAND]({
                     type: Commands.shred,
                     target: this.chosenItem.full,
                     strategy: this.shredStrategy,
@@ -122,15 +129,15 @@
                 this.mdlc().hide();
             },
             mdlcOnHide() {
-                this.keyUnfreeze();
+                this[KEY_UNFREEZE]();
             },
             mdlcOnShown() {
-                this.keyFreeze();
+                this[KEY_FREEZE]();
                 document.getElementById('btnMdlcConfirm').focus()
             },
             mdlcConfirm() {
                 this.lastCmd = Commands.crypt;
-                this.newCommand({type: Commands.crypt, target: this.chosenItem.full});
+                this[NEW_COMMAND]({type: Commands.crypt, target: this.chosenItem.full});
                 this.mdlc().hide();
             },
 
@@ -142,12 +149,12 @@
             },
             onChoose(arg) {
                 arg.type = Commands.choose;
-                this.newCommand(arg)
+                this[NEW_COMMAND](arg)
             },
             btnRunClick(target, ev) {
                 if (ev)
                     ev.stopPropagation();
-                this.newCommand({type: Commands.run, target});
+                this[NEW_COMMAND]({type: Commands.run, target});
             },
             btnCryptClick(target, ev) {
                 if (ev)
@@ -201,13 +208,13 @@
 
         },
         computed: {
-            items: mapGetters(['getItems']).getItems,
-            browsed: mapGetters(['getBrowsed']).getBrowsed,
-            pressedKey: mapGetters(['getPressedKey']).getPressedKey,
-            chosenItem: mapGetters(['getChosenItem']).getChosenItem,
-            isBusy: mapGetters(['isBusy']).isBusy
+            ...mapGetters(['items', 'browsed', 'pressedKey', 'chosenItem', 'isBusy'])
         },
-        created() {
+        beforeUpdate() {
+            this[ADD_CUSTOM_SYNC_JOB](this.$options.name);
+        },
+        updated() {
+            this[REMOVE_CUSTOM_SYNC_JOB](this.$options.name);
         },
         watch: {
             items() {

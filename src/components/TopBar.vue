@@ -77,14 +77,16 @@
 <script>
     import {mapGetters, mapActions} from "vuex";
     import {KeyBindings, Commands} from "@/common";
+    import {
+        KEY_FREEZE,
+        KEY_UNFREEZE,
+        NEW_COMMAND
+    } from '@/store/actions.type'
 
     export default {
         name: "TopBar",
         computed: {
-            browsed: mapGetters(['getBrowsed']).getBrowsed,
-            isBusy: mapGetters(['isBusy']).isBusy,
-            pressedKey: mapGetters(['getPressedKey']).getPressedKey,
-            error: mapGetters(['getError']).getError
+            ...mapGetters(['browsed', 'isBusy', 'pressedKey', 'error'])
         },
         data() {
             return {
@@ -94,7 +96,7 @@
             }
         },
         methods: {
-            ...mapActions(['keyFreeze', 'keyUnfreeze', 'newCommand']),
+            ...mapActions([KEY_FREEZE, KEY_UNFREEZE, NEW_COMMAND]),
             getHotKey(target) {
                 switch (target) {
                     case 'e':
@@ -121,14 +123,14 @@
                 this.mdld().hide();
             },
             mdldOnHide() {
-                this.keyUnfreeze();
+                this[KEY_UNFREEZE]();
             },
             mdldOnShown() {
-                this.keyFreeze();
+                this[KEY_FREEZE]();
             },
             mdldConfirm() {
                 if (this.mdldInput)
-                    this.newCommand({type: Commands.setdef, target: this.mdldInput});
+                    this[NEW_COMMAND]({type: Commands.setdef, target: this.mdldInput});
                 this.mdld().hide()
             },
 
@@ -144,14 +146,14 @@
                 this.mdlg().hide();
             },
             mdlgOnHide() {
-                this.keyUnfreeze();
+                this[KEY_UNFREEZE]();
             },
             mdlgOnShown() {
-                this.keyFreeze();
+                this[KEY_FREEZE]();
             },
             mdlgConfirm() {
                 if (this.mdlgInput)
-                    this.newCommand({type: Commands.browse, full: this.mdlgInput});
+                    this[NEW_COMMAND]({type: Commands.browse, full: this.mdlgInput});
                 this.mdlg().hide()
             },
 
@@ -166,22 +168,22 @@
             },
             mdlpOnHide() {
                 this.$store.commit('setPhrase', this.localPhrase);
-                this.keyUnfreeze();
+                this[KEY_UNFREEZE]();
             },
             mdlpOnShown() {
-                this.keyFreeze();
+                this[KEY_FREEZE]();
             },
             btnSetDefClick() {
                 this.mdldPrompt();
             },
             btnExploreClick() {
-                this.newCommand({type: Commands.explore});
+                this[NEW_COMMAND]({type: Commands.explore});
             },
             btnGotoClick() {
                 this.mdlgPrompt();
             },
             btnRefreshClick() {
-                this.newCommand({type: Commands.browse, target: this.browsed});
+                this[NEW_COMMAND]({type: Commands.browse, target: this.browsed});
             },
             btnPhraseClick() {
                 this.mdlpPrompt()
