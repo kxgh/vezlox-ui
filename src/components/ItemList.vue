@@ -1,6 +1,6 @@
 <template>
     <b-list-group>
-        <b-list-group-item button v-for="(it,index) in items" :class="{active: it.full == chosenItem.full}"
+        <b-list-group-item ref="fileitems" button v-for="(it,index) in items" :class="{active: it.full == chosenItem.full}"
                            class="fileitem d-flex justify-content-between align-items-center" :data-ext="it.ext"
                            :key="it.full"
                            @click="onChoose({full:it.full,ext:it.ext,focusId:index,name:it.name})"
@@ -34,7 +34,7 @@
                           description="How many times should the file be shredded">
                 <b-form-spinbutton v-model="shredPassCount"/>
             </b-form-group>
-            <b-button id="btnMdlsConfirm" class="mt-3" variant="outline-success" block @click="mdlsConfirm()">Shred
+            <b-button ref="btnMdlsConfirm" class="mt-3" variant="outline-success" block @click="mdlsConfirm()">Shred
             </b-button>
             <b-button class="mt-2" variant="outline-danger" block @click="mdlsHide()">Cancel</b-button>
         </b-modal>
@@ -48,7 +48,7 @@
                     file</p>
                 <kbd>{{chosenItem.full}}</kbd>
             </div>
-            <b-button id="btnMdlcConfirm" class="mt-3" variant="outline-success" block @click="mdlcConfirm()">Confirm
+            <b-button ref="btnMdlcConfirm" class="mt-3" variant="outline-success" block @click="mdlcConfirm()">Confirm
             </b-button>
             <b-button class="mt-2" variant="outline-danger" block @click="mdlcHide()">Cancel</b-button>
         </b-modal>
@@ -88,6 +88,9 @@
             }
         },
         methods: {
+            xxx(){
+                console.log(this.$refs.fileitems)
+            },
             ...mapActions([KEY_UNFREEZE, KEY_FREEZE, NEW_COMMAND, ADD_CUSTOM_SYNC_JOB, REMOVE_CUSTOM_SYNC_JOB]),
             chosenItemEncrypted() {
                 return hasEncExt(this.chosenItem.name)
@@ -106,7 +109,7 @@
             },
             mdlsOnShown() {
                 this[KEY_FREEZE]();
-                document.getElementById('btnMdlsConfirm').focus()
+                this.$refs.btnMdlsConfirm.focus();
             },
             mdlsConfirm() {
                 this.lastCmd = Commands.shred;
@@ -133,7 +136,7 @@
             },
             mdlcOnShown() {
                 this[KEY_FREEZE]();
-                document.getElementById('btnMdlcConfirm').focus()
+                this.$refs.btnMdlcConfirm.focus()
             },
             mdlcConfirm() {
                 this.lastCmd = Commands.crypt;
@@ -171,7 +174,7 @@
                 this.focusedItemEl = el;
             },
             getFileItemElements() {
-                return this.$el.children;
+                return this.$refs.fileitems;
             },
             focusFirst() {
                 this.getFileItemElements()[0].focus();

@@ -5,19 +5,19 @@
                 <a href="#" @click="mdlgPrompt">{{browsed}}</a>
             </div>
             <div class="pill-container">
-                <b-button id="btnSetDef" size="sm" pill variant="light" @click="btnSetDefClick">
+                <b-button ref="btnSetDef" size="sm" pill variant="light" @click="btnSetDefClick">
                     <b-icon icon="house-fill" variant="dark"></b-icon>
                 </b-button>
-                <b-button id="btnExplore" size="sm" pill variant="light" @click="btnExploreClick">
+                <b-button ref="btnExplore" size="sm" pill variant="light" @click="btnExploreClick">
                     <b-icon icon="folder-symlink" variant="dark"></b-icon>
                 </b-button>
-                <b-button id="btnGoto" size="sm" pill variant="light" @click="btnGotoClick()">
+                <b-button ref="btnGoto" size="sm" pill variant="light" @click="btnGotoClick()">
                     <b-icon icon="reply-fill" variant="dark"></b-icon>
                 </b-button>
-                <b-button id="btnRefresh" size="sm" pill variant="light" @click="btnRefreshClick">
+                <b-button ref="btnRefresh" size="sm" pill variant="light" @click="btnRefreshClick">
                     <b-icon icon="arrow-repeat" variant="dark"></b-icon>
                 </b-button>
-                <b-button id="btnPhrase" size="sm" pill variant="light" @click="btnPhraseClick">
+                <b-button ref="btnPhrase" size="sm" pill variant="light" @click="btnPhraseClick">
                     <b-icon icon="shield-lock-fill" variant="dark"></b-icon>
                 </b-button>
             </div>
@@ -58,19 +58,19 @@
             </div>
         </b-modal>
 
-        <b-tooltip target="btnSetDef" triggers="hover" placement="bottom" noninteractive>
+        <b-tooltip :target="()=>$refs.btnSetDef" triggers="hover" placement="bottom" noninteractive>
             Set home folder
         </b-tooltip>
-        <b-tooltip target="btnExplore" triggers="hover" placement="bottom" noninteractive>
+        <b-tooltip :target="()=>$refs.btnExplore" triggers="hover" placement="bottom" noninteractive>
             Open directory in explorer {{getHotKey('e')}}
         </b-tooltip>
-        <b-tooltip target="btnGoto" triggers="hover" placement="bottom" noninteractive>
+        <b-tooltip :target="()=>$refs.btnGoto" triggers="hover" placement="bottom" noninteractive>
             Jump to directory {{getHotKey('g')}}
         </b-tooltip>
-        <b-tooltip target="btnRefresh" triggers="hover" placement="bottom" noninteractive>
+        <b-tooltip :target="()=>$refs.btnRefresh" triggers="hover" placement="bottom" noninteractive>
             Refresh directory contents {{getHotKey('r')}}
         </b-tooltip>
-        <b-tooltip target="btnPhrase" triggers="hover" placement="bottom" noninteractive>
+        <b-tooltip :target="()=>$refs.btnPhrase" triggers="hover" placement="bottom" noninteractive>
             Enter passphrase {{getHotKey('p')}}
         </b-tooltip>
     </b-breadcrumb>
