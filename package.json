@@ -1,6 +1,7 @@
 {
   "name": "vezlox",
   "version": "0.1.1",
+  "homepage": ".",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

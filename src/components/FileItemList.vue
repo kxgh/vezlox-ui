@@ -1,23 +1,18 @@
 <template>
     <b-list-group>
-        <b-list-group-item ref="fileitems" button v-for="(it,index) in items" :class="{active: it.full == chosenItem.full}"
-                           class="fileitem d-flex justify-content-between align-items-center" :data-ext="it.ext"
-                           :key="it.full"
-                           @click="onChoose({full:it.full,ext:it.ext,focusId:index,name:it.name})"
-                           @focus="onFocus(index,$event.target)">
-            <span class="fileitem-name">{{it.name}}</span>
-            <div class="pill-container" v-show="it.full == chosenItem.full">
-                <b-button size="sm" pill variant="success" @click="btnRunClick(it.full, $event)">
-                    <b-icon icon="play-fill" variant="light"></b-icon>
-                </b-button>
-                <b-button size="sm" pill variant="warning" @click="btnCryptClick(it.full, $event)">
-                    <b-icon icon="lock-fill" variant="dark"></b-icon>
-                </b-button>
-                <b-button size="sm" pill variant="danger" @click="btnShredClick(it.full, $event)">
-                    <b-icon icon="trash-fill" variant="light"></b-icon>
-                </b-button>
-            </div>
-        </b-list-group-item>
+        <div ref="fileitems-container">
+            <FileItem button v-for="(it,index) in items"
+                      :key="it.full" :data-ext="it.ext"
+                      :on-run-click="btnRunClick"
+                      :on-crypt-click="btnCryptClick"
+                      :on-shred-click="btnShredClick"
+                      :on-focus="()=>onFocus(index)"
+                      :on-click="()=>onChoose({full:it.full,ext:it.ext,focusId:index,name:it.name})"
+                      :file-full="it.full"
+                      :file-name="it.name">
+                {{it.name}}
+            </FileItem>
+        </div>
 
         <b-modal ref="modal-sureShred" hide-footer centered title="Confirm shredding" size="xl"
                  @shown="mdlsOnShown" @hide="mdlsOnHide">
@@ -65,13 +60,14 @@
         KEY_UNFREEZE,
         NEW_COMMAND
     } from '@/store/actions.type';
+    import FileItem from "@/components/FileItem";
 
     export default {
-        name: 'ItemList',
+        name: 'FileItemList',
+        components: {FileItem},
         data() {
             return {
                 focusedItemId: -1,
-                focusedItemEl: null,
                 lastCmd: '',
                 lastFocusMap: {},
                 shredStrategyOptions: [
@@ -88,9 +84,6 @@
             }
         },
         methods: {
-            xxx(){
-                console.log(this.$refs.fileitems)
-            },
             ...mapActions([KEY_UNFREEZE, KEY_FREEZE, NEW_COMMAND, ADD_CUSTOM_SYNC_JOB, REMOVE_CUSTOM_SYNC_JOB]),
             chosenItemEncrypted() {
                 return hasEncExt(this.chosenItem.name)
@@ -148,7 +141,7 @@
                 this.lastFocusMap[this.browsed] = this.focusedItemId
             },
             focusLoad() {
-                return this.lastFocusMap[this.browsed]
+                return parseInt(this.lastFocusMap[this.browsed])
             },
             onChoose(arg) {
                 arg.type = Commands.choose;
@@ -169,12 +162,11 @@
                     ev.stopPropagation();
                 this.mdlsPrompt()
             },
-            onFocus(id, el) {
+            onFocus(id) {
                 this.focusedItemId = id;
-                this.focusedItemEl = el;
             },
             getFileItemElements() {
-                return this.$refs.fileitems;
+                return this.$refs['fileitems-container'].children;
             },
             focusFirst() {
                 this.getFileItemElements()[0].focus();
@@ -196,7 +188,6 @@
                     lis[0].focus();
                     return;
                 }
-
                 const target = lis[newFocusedItemId];
                 if (target) {
                     target.focus();
@@ -248,10 +239,10 @@
                 }
 
                 if (KeyBindings.forward.includes(k)) {
-                    const targ = this.focusedItemEl;
+                    const targ = this.getFileItemElements()[this.focusedItemId];
                     if (targ) {
                         // if 'chosen' already chosen item
-                        if (this.chosenItem.full == this.items[this.focusedItemId].full) {
+                        if (this.chosenItem.full === this.items[this.focusedItemId].full) {
                             this.btnRunClick(this.chosenItem.full);
                             return
                         }
@@ -268,77 +259,6 @@
         }
     }
 </script>
-<style scoped>
-    .fileitem-name {
-        font-family: Cairo, Helvetica, Arial, sans-serif;
-        font-size: large;
-        max-width: 80%;
-        word-break: normal;
-        overflow: hidden;
-        position: relative;
-        left: 1rem;
-    }
+<style>
 
-    .fileitem {
-        word-break: break-word;
-    }
-
-    .fileitem::before {
-        content: '';
-        position: absolute;
-        display: inline-block;
-        margin: auto;
-        left: .5rem;
-
-        width: 1.5rem;
-        height: 1.5rem;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: contain;
-        background-image: url("/icons/file.png");
-    }
-
-    .fileitem[data-ext$='/']::before {
-        background-image: url("/icons/folder.png");
-    }
-
-    .fileitem[data-ext$='png']::before, .fileitem[data-ext$='jpg']::before, .fileitem[data-ext$='bmp']::before, .fileitem[data-ext$='jpeg']::before, .fileitem[data-ext$='gif']::before {
-        background-image: url("/icons/image.png");
-    }
-
-    .fileitem[data-ext$='avi']::before, .fileitem[data-ext$='mkv']::before, .fileitem[data-ext$='mp4']::before, .fileitem[data-ext$='wmv']::before {
-        background-image: url("/icons/film.png");
-    }
-
-    .fileitem[data-ext$='exe']::before, .fileitem[data-ext$='bat']::before {
-        background-image: url("/icons/app.png");
-    }
-
-    .fileitem[data-ext$='html']::before, .fileitem[data-ext$='htm']::before {
-        background-image: url("/icons/web.png");
-    }
-
-    .fileitem[data-ext$='xls']::before, .fileitem[data-ext$='ods']::before, .fileitem[data-ext$='xlsx']::before {
-        background-image: url("/icons/excel.png");
-    }
-
-    .fileitem[data-ext$='pdf']::before {
-        background-image: url("/icons/pdf.png");
-    }
-
-    .fileitem[data-ext$='ezx']::before {
-        background-image: url("/icons/lock.png");
-    }
-
-    .fileitem[data-ext$='mp3']::before, .fileitem[data-ext$='wav']::before, .fileitem[data-ext$='m4a']::before, .fileitem[data-ext$='flac']::before {
-        background-image: url("/icons/sound.png");
-    }
-
-    .fileitem[data-ext$='txt']::before, .fileitem[data-ext$='cfg']::before, .fileitem[data-ext$='srt']::before, .fileitem[data-ext$='rtf']::before, .fileitem[data-ext$='css']::before {
-        background-image: url("/icons/text.png");
-    }
-
-    .fileitem[data-ext$='7z']::before, .fileitem[data-ext$='gz']::before, .fileitem[data-ext$='jar']::before, .fileitem[data-ext$='zip']::before, .fileitem[data-ext$='rar']::before, .fileitem[data-ext$='tar']::before {
-        background-image: url("/icons/archive.png");
-    }
 </style>

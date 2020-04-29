@@ -2,13 +2,13 @@
     <div id="app">
         <b-overlay :show="isBusy" rounded="lg">
             <TopBar/>
-            <ItemList/>
+            <FileItemList/>
         </b-overlay>
     </div>
 </template>
 
 <script>
-    import ItemList from './components/ItemList.vue'
+    import FileItemList from './components/FileItemList.vue'
     import {mapActions, mapGetters} from 'vuex'
     import TopBar from "@/components/TopBar";
     import {
@@ -33,7 +33,7 @@
         ,
         components: {
             TopBar,
-            ItemList
+            FileItemList
         },
         computed: {
             ...mapGetters(['isBusy', 'browsed', 'chosenItem'])
