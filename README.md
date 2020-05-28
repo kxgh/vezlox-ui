@@ -1,24 +1,3 @@
-# vezlox
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Frontend for vezlox - quick file shredder and encrypter. 
+Uses Vue+VueX+BS4+websockets 
+[video](https://s.ics.upjs.sk/~kvrastiak/vezlox3.mp4)
